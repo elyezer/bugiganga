@@ -1,0 +1,73 @@
+- name: Ensure required packages are installed
+  action: '{{ ansible_pkg_mgr }} name={{ item }} state=latest'
+  become: true
+  become_user: root
+  with_items:
+    - python-virtualenvwrapper
+    - terminator
+    - tmux
+    - zsh
+
+- name: Clone oh-my-zsh repo
+  git:
+    accept_hostkey: yes
+    depth: 1
+    dest: '{{ ansible_user_dir }}/.oh-my-zsh'
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    update: yes
+
+- name: Create a new zsh configuration file
+  copy:
+    src: '{{ ansible_user_dir }}/.oh-my-zsh/templates/zshrc.zsh-template'
+    dest: '{{ ansible_user_dir }}/.zshrc'
+    backup: yes
+
+- name: Set the default shell
+  user:
+    name: '{{ ansible_user }}'
+    shell: /bin/zsh
+  become: true
+  become_user: root
+
+- name: Configure oh-my-zsh theme
+  replace:
+    path: '{{ ansible_user_dir }}/.zshrc'
+    regexp: '^ZSH_THEME="\w+"$'
+    replace: 'ZSH_THEME="agnoster"'
+
+- name: Configure oh-my-zsh plugins
+  replace:
+    path: '{{ ansible_user_dir }}/.zshrc'
+    regexp: '^plugins=\(\w+\)$'
+    replace: 'plugins=(docker fabric git hub heroku linux pip python tmux virtualenv virtualenvwrapper)'
+
+- name: Configure aditional oh-my-zsh configure
+  blockinfile:
+    path: '{{ ansible_user_dir }}/.zshrc'
+    block: |
+      # Agonster config to not show user@host for the default user
+      export DEFAULT_USER="elyezer"
+
+      # Set preferred editor
+      export EDITOR='vim'
+
+- name: Ensure terminator config dir is present
+  file:
+    path: '{{ ansible_user_dir }}/.config/terminator'
+    state: directory
+    mode: 0700
+
+- name: Copy terminator config
+  copy:
+    src: terminator_config
+    dest: '{{ ansible_user_dir }}/.config/terminator/config'
+
+- name: Copy global gitconfig
+  copy:
+    src: gitconfig
+    dest: '{{ ansible_user_dir }}/.gitconfig'
+
+- name: Copy global gitignore
+  copy:
+    src: gitignore
+    dest: '{{ ansible_user_dir }}/.gitignore'

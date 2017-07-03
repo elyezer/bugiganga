@@ -1,0 +1,22 @@
+- name: Ensure required packages are installed
+  action: '{{ ansible_pkg_mgr }} name={{ item }} state=latest'
+  become: true
+  become_user: root
+  with_items:
+    - the_silver_searcher
+    - vim
+
+# TODO allow cloning using either https or git
+- name: Clone .vim repo
+  git:
+    accept_hostkey: yes
+    dest: '{{ ansible_user_dir }}/.vim'
+    key_file: '{{ ansible_user_dir }}/.ssh/id_rsa'
+    repo: 'git@github.com:elyezer/.vim.git'
+    update: yes
+
+- name: Create symbolic link to vimrc
+  file:
+    src: '{{ ansible_user_dir }}/.vim/vimrc'
+    dest: '{{ ansible_user_dir }}/.vimrc'
+    state: link

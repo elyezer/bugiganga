@@ -1,0 +1,18 @@
+- name: Add Negativo17.org repository for Spotify
+  command: 'dnf config-manager --add-repo=http://negativo17.org/repos/fedora-spotify.repo'
+  args:
+    creates: /etc/yum.repos.d/fedora-spotify.repo
+  become: true
+
+- name: Install packages
+  dnf:
+    name: '{{ item }}'
+    state: latest
+  become: true
+  with_items:
+    - gimp
+    - hexchat
+    - python-gpgme  # Required by Dropbox client to verify the binaries
+    - python36
+    - spotify-client
+    - terminator

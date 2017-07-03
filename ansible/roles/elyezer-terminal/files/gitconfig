@@ -1,0 +1,11 @@
+[user]
+	name = Elyézer Rezende
+	email = elyezermr@gmail.com
+[color]
+	ui = true
+[core]
+	excludesfile = ~/.gitignore
+[push]
+	default = matching
+[github]
+	user = elyezer
