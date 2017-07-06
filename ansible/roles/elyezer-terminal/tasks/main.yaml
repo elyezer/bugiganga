@@ -22,6 +22,7 @@
     src: '{{ ansible_user_dir }}/.oh-my-zsh/templates/zshrc.zsh-template'
     dest: '{{ ansible_user_dir }}/.zshrc'
     backup: yes
+    remote_src: yes
 
 - name: Set the default shell
   user:
