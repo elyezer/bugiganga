@@ -6,6 +6,7 @@
     - python-virtualenvwrapper
     - terminator
     - tmux
+    - vim-X11  # to have clipboard support enabled
     - zsh
 
 - name: Clone oh-my-zsh repo
@@ -49,7 +50,12 @@
       export DEFAULT_USER="elyezer"
 
       # Set preferred editor
-      export EDITOR='vim'
+      export EDITOR='gvim -v'
+
+      # vim on Fedora is built with a minimal set of features enabled to
+      # minimize dependencies, use `gvim -v` which comes with more features
+      # enabled like clipboard.
+      alias vim="gvim -v"
 
 - name: Ensure terminator config dir is present
   file:
