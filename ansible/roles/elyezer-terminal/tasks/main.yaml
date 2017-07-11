@@ -3,8 +3,10 @@
   become: true
   become_user: root
   with_items:
+    - openssl-devel
     - pipsi
     - python-virtualenvwrapper
+    - redhat-rpm-config  # provides /usr/lib/rpm/redhat/redhat-hardened-cc1
     - terminator
     - tmux
     - vim-X11  # to have clipboard support enabled
