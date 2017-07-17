@@ -1,18 +1,29 @@
-- name: Add Negativo17.org repository for Spotify
-  command: 'dnf config-manager --add-repo=http://negativo17.org/repos/fedora-spotify.repo'
-  args:
-    creates: /etc/yum.repos.d/fedora-spotify.repo
-  become: true
+- block:
+  - name: Add Negativo17.org repository for Spotify
+    command: 'dnf config-manager --add-repo=http://negativo17.org/repos/fedora-spotify.repo'
+    args:
+      creates: /etc/yum.repos.d/fedora-spotify.repo
 
-- name: Install packages
-  dnf:
-    name: '{{ item }}'
-    state: latest
+  - name: Setup RPM Fusion Free
+    command: 'dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm'
+    args:
+      creates: /etc/yum.repos.d/rpmfusion-free.repo
+
+  - name: Setup RPM Fusion Nonfree
+    command: 'dnf -y install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_distribution_major_version }}.noarch.rpm'
+    args:
+      creates: /etc/yum.repos.d/rpmfusion-nonfree.repo
+
+  - name: Install packages
+    dnf:
+      name: '{{ item }}'
+      state: latest
+    with_items:
+      - gimp
+      - hexchat
+      - python-gpgme  # Required by Dropbox client to verify the binaries
+      - python36
+      - spotify-client
+      - terminator
+      - vlc
   become: true
-  with_items:
-    - gimp
-    - hexchat
-    - python-gpgme  # Required by Dropbox client to verify the binaries
-    - python36
-    - spotify-client
-    - terminator
